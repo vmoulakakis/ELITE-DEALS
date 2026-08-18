@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "prebuild": "base64 -d source.tgz.b64 > /tmp/elite-deals-source.tgz && tar -xzf /tmp/elite-deals-source.tgz -C .",
+    "prebuild": "cat source-part-*.b64 | tr -d '\r\n' | base64 -d > /tmp/elite-deals-source.tgz && tar -xzf /tmp/elite-deals-source.tgz -C .",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "deploy": "npm run build && wrangler deploy"
