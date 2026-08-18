@@ -1,0 +1,52 @@
+name: Recover codebase
+
+on:
+  push:
+    branches:
+      - recover-codebase
+    paths:
+      - '.github/workflows/recover-codebase.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Decode and extract payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf recovered-src payload.b64 payload.gz payload.bin
+          mkdir -p recovered-src
+          parts=$(find deploy-payload -maxdepth 1 -type f -name 'part-*.txt' | sort)
+          test -n "$parts"
+          cat $parts | tr -d '\r\n' > payload.b64
+          base64 -d payload.b64 > payload.gz
+          gzip -t payload.gz
+          gzip -dc payload.gz > payload.bin
+          if tar -tf payload.bin >/dev/null 2>&1; then
+            tar -xf payload.bin -C recovered-src
+          elif unzip -t payload.bin >/dev/null 2>&1; then
+            unzip -q payload.bin -d recovered-src
+          else
+            cp payload.bin recovered-src/payload.bin
+          fi
+          echo 'Recovered files:'
+          find recovered-src -maxdepth 6 -type f -printf '%P\n' | sort
+      - name: Commit recovered source tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add recovered-src
+          if git diff --cached --quiet; then
+            echo 'No recovered changes to commit.'
+            exit 0
+          fi
+          git commit -m 'Recover Elite Deals source tree from deployment payload'
+          git push origin HEAD:recover-codebase
