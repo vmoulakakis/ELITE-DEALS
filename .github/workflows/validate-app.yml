@@ -15,8 +15,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Install and build production app
+      - name: Install production dependencies
         run: npm install --no-audit --no-fund
+      - name: Build production app
+        run: npm run build
       - name: Verify Vite output
         run: test -f dist/index.html
       - name: Verify Cloudflare deployment bundle
