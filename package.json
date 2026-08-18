@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "prebuild": "cat source-part-*.b64 | tr -d '\r\n' | base64 -d > /tmp/elite-deals-source.tgz && echo '29c78a3b8855049afe32c7f4fe00f9bed12c36b05bb7fb2da28a7ecaaa8c61c6  /tmp/elite-deals-source.tgz' | sha256sum -c - && tar -xzf /tmp/elite-deals-source.tgz -C .",
+    "prebuild": "cat source-part-*.b64 | tr -d '\r\n' | base64 -d > /tmp/elite-deals-source.tgz && echo '29c78a3b8855049afe32c7f4fe00f9bed12c36b05bb7fb2da28a7ecaaa8c61c6  /tmp/elite-deals-source.tgz' | sha256sum -c - && tar -xzf /tmp/elite-deals-source.tgz -C . && mv tailwind.config.js tailwind.config.cjs",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "deploy": "npm run build && wrangler deploy"
