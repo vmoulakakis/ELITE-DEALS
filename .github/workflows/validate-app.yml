@@ -1,6 +1,9 @@
 name: Validate Elite Deals app
 
 on:
+  push:
+    branches:
+      - fix-cloudflare-production
   pull_request:
   workflow_dispatch:
 
