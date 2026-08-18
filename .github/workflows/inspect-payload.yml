@@ -2,6 +2,9 @@ name: Inspect deployment payload
 
 on:
   pull_request:
+  push:
+    paths:
+      - '.github/workflows/inspect-payload.yml'
   workflow_dispatch:
 
 jobs:
