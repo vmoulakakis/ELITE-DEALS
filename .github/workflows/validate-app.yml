@@ -3,7 +3,7 @@ name: Validate Elite Deals app
 on:
   push:
     branches:
-      - fix-cloudflare-production
+      - main
   pull_request:
   workflow_dispatch:
 
@@ -15,9 +15,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Install dependencies
+      - name: Install and build production app
         run: npm install --no-audit --no-fund
-      - name: Production build
-        run: npm run build
-      - name: Verify Cloudflare configuration
+      - name: Verify Vite output
+        run: test -f dist/index.html
+      - name: Verify Cloudflare deployment bundle
         run: npx wrangler deploy --dry-run
